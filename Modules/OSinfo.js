@@ -1,4 +1,5 @@
 var os = require('os');
+var colors = require('colors');
 var timeConverter = require('./timeConv');
 
 function getOSinfo() {
@@ -12,12 +13,12 @@ function getOSinfo() {
     var cpu = os.cpus()[0].model;
     var uptime = os.uptime();
     var userInfo = os.userInfo();
-    console.log('User name:', userInfo.username);
-    console.log('Home dir:', userInfo.homedir);
-    console.log('Uptime: ~', timeConverter.print(uptime));
-    console.log('CPU model:', cpu);
-    console.log('System:', type);
-    console.log('Release:', release);
+    console.log('User name:'.green, userInfo.username);
+    console.log('Home dir:'.red, userInfo.homedir);
+    console.log('Uptime: ~'.grey, timeConverter.print(uptime));
+    console.log('CPU model:'.rainbow, cpu);
+    console.log('System:'.yellow, type);
+    console.log('Release:'.blue, release);
 
 }
 

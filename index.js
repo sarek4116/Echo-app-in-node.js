@@ -1,4 +1,4 @@
-var OSinfo = require('../Modules/OSInfo');
+var OSinfo = require('./Modules/OSInfo');
 
 
 process.stdin.setEncoding('utf-8');
