@@ -1,62 +1,21 @@
-var OSinfo = require('./Modules/OSInfo');
-
-var EventEmitter = require('events').EventEmitter;
-var emitter = new EventEmitter();
-
-emitter.on('beforeCommand', function (instruction) {
-    console.log('You wrote: ' + instruction + ' trying to run command.')
-});
-emitter.on('afterCommand', function () {
-    console.log('Finished command');
-});
-
-
-process.stdin.setEncoding('utf-8');
-
-process.stdin.on('readable', function () {
-    var input = process.stdin.read();
-    if (input !== null) {
-        var instruction = input.toString().trim();
-        switch (instruction) {
-            case '/exit':
-                process.stdout.write('Quitting app!\n');
-                process.exit();
-                break
-            case '/getOSinfo':
-                OSinfo.print();
-                break
-            default:
-                process.stderr.write('Wrong instruction!\n');
-                process.stdout.write('Node version is: ' + process.versions.node + ' Language is: ' + process.env.LANG);
-        }
-        emitter.emit('afterCommand');
-    }
-});
-
 var fs = require('fs');
-var StatMode = require('stat-mode');
+var http = require('http');
+var server = http.createServer();
 
-fs.stat('./cat.jpg', function (err, stats) {
-    var statMode = new StatMode(stats);
-    console.log(statMode.toString());
-});
 
-fs.readFile('./tekst.txt', 'utf-8', function (err, data) {
-    console.log('Dane przed zapisem!'.blue);
-    console.log(data);
-    fs.appendFile('./tekst.txt', '\nA tak wyglądają po zapisie!', function (err) {
-        if (err) throw err;
-        console.log('Zapisano!'.blue);
-        fs.readFile('./tekst.txt', 'utf-8', function (err, data) {
-            console.log('Dane po zapisie'.blue)
-            console.log(data);
-        });
+fs.readFile('./index.html', 'utf-8', function (err, data) {
+
+    server.on('request', function (request, response) {
+        response.setHeader("Content-Type", "text/html; charset=utf-8");
+        if (request.method === 'GET' && request.url === '/hello') {
+            response.write(data);
+            response.end();
+        } else {
+            response.statusCode = 404;
+            response.write('<h1>404: Zła ścieżka!</h1>');
+            response.end();
+        }
+
     });
+    server.listen(8000);
 });
-
-fs.readdir('../Echo-app-in-node.js', function (err, file) {
-    fs.writeFile('index2.js', file, (err) => {
-        if (err) throw
-        console.log('Zapisano!'.rainbow);
-    })
-})
